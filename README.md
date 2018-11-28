@@ -1,1 +1,3 @@
-# onthemap
+# OnTheMap
+Udacity Course App
+
