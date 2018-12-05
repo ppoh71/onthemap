@@ -16,7 +16,6 @@ class LoginVC: UIViewController {
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var spinner: UIActivityIndicatorView!
     
-    let cornerRadius = CGFloat(2.0)
     let signupURL = URL(string: "https://auth.udacity.com/sign-up?next=https%3A%2F%2Fclassroom.udacity.com%2Fauthenticated")!
     let activeLogin = false
     
@@ -25,6 +24,10 @@ class LoginVC: UIViewController {
         // Do any additional setup after loading the view, typically from a nib.
         setup()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        isLoggingIn(false)
+    }
 
     @IBAction func loginButtonTapped(_ sender: Any) {
         print("login tapped")
@@ -32,7 +35,9 @@ class LoginVC: UIViewController {
         //performSegue(withIdentifier: "LoginSuccessSegue", sender: nil) // debug shortcut
         
         if let email = emailTextfield.text, let password = passwordTextfield.text{
-            LoginClient.udacityLogin(username: email, password: password, completion: requestHandlerLogin(response:error:))
+            LoginClient.login(username: email, password: password, completion: requestHandlerLogin(response:error:))
+        }else{
+            showAlert(title: "Login Faliure", message: "Please Provide Your Login Credentials!")
         }
     }
     
@@ -42,14 +47,16 @@ class LoginVC: UIViewController {
             isLoggingIn(false)
             return
         }
-      
-        if let udacityResponse = response{
-           print(udacityResponse.account.registered)
-           print(udacityResponse.session.id)
-           //go on with segue
-           isLoggingIn(false)
-           performSegue(withIdentifier: "LoginSuccessSegue", sender: nil)
+        LoginClient.getUserData(key: LoginClient.Auth.key, completion: requestHandlerUserData(success:error:))
+    }
+    
+    func requestHandlerUserData(success: Bool, error: Error?){
+        if error != nil{
+            showAlert(title: "Login failure", message: "Getting User Data Failed (\(String(describing: error)))"  )
+            return
         }
+        isLoggingIn(false)
+        performSegue(withIdentifier: "LoginSuccessSegue", sender: nil)
     }
     
     func setup(){
@@ -57,11 +64,14 @@ class LoginVC: UIViewController {
         let tap = UITapGestureRecognizer(target: self, action: #selector(openSignupLink))
         signUp.isUserInteractionEnabled = true
         signUp.addGestureRecognizer(tap)
-        
+        print(Utilities.cornerRadius)
+        print("setupt")
         //ui
-        emailTextfield.layer.cornerRadius = cornerRadius
-        passwordTextfield.layer.cornerRadius = cornerRadius
-        loginButton.layer.cornerRadius = cornerRadius
+        emailTextfield.layer.cornerRadius = Utilities.cornerRadius
+        passwordTextfield.layer.cornerRadius = Utilities.cornerRadius
+        loginButton.layer.cornerRadius = Utilities.cornerRadius
+        
+        isLoggingIn(false)
     }
     
     @objc func openSignupLink(){
@@ -69,9 +79,8 @@ class LoginVC: UIViewController {
     }
     
     func showAlert(title: String, message: String){
-        let alertVC = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-        show(alertVC, sender: nil)
+        let alert = Alerts.defineAlert(title: title, message: message)
+        show(alert, sender: nil)
     }
     
     func isLoggingIn(_ activeLogin: Bool){

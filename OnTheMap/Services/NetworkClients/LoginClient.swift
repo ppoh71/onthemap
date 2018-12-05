@@ -14,10 +14,15 @@ class LoginClient{
         static var registered: Bool = false
         static var key: String = ""
         static var sessionId: String = ""
+        static var firstName: String = ""
+        static var lastName: String = ""
+        static var image: String = ""
     }
     
     enum Endpoints{
         case udacityLogin
+        case udacityLogout
+        case getUserData(value: String)
         
         var url: URL{
             return URL(string: self.stringValue)!
@@ -27,52 +32,34 @@ class LoginClient{
             switch(self){
             case .udacityLogin:
                 return "https://onthemap-api.udacity.com/v1/session"
+            case .udacityLogout:
+                return "https://onthemap-api.udacity.com/v1/session"
+            case .getUserData(let userData):
+                return "https://onthemap-api.udacity.com/v1/users/\(userData)"
             }
         }
     }
     
-    class func udacityLogin(username: String, password: String, completion: @escaping (LoginResponse?, Error?) -> Void){
+    class func login(username: String, password: String, completion: @escaping (LoginResponse?, Error?) -> Void){
         var request = URLRequest(url: LoginClient.Endpoints.udacityLogin.url)
-        print(LoginClient.Endpoints.udacityLogin.url)
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        
         let httpBody = LoginRequest(udacity: Credetials(username: username, password: password))
         request.httpBody = try! JSONEncoder().encode(httpBody)
-//        request.httpBody = """
-//                            {
-//                             "udacity":
-//                                {
-//                                "username": "\(username)",
-//                                "password": "\(password)"
-//                                }
-//                            }
-//                            """.data(using: .utf8)!
 
         let session = URLSession.shared
         let task = session.dataTask(with: request) { data, response, error in
             if error != nil {
+                DispatchQueue.main.async {
+                    completion(nil, error)
+                }
                 return
             }
             
             let range = 5..<data!.count
             let newData = data?.subdata(in: range) /* subset response data! */
             print(String(data: newData!, encoding: .utf8)!)
-            print(response)
-            
-//            let debugData = """
-//                    {
-//                    "account":{
-//                    "registered":true,
-//                    "key":"3903878747"
-//                    },
-//                    "session":{
-//                    "id":"1457628510Sc18f2ad4cd3fb317fb8e028488694088",
-//                    "expiration":"2015-05-10T16:48:30.760460Z"
-//                    }
-//                    }
-//                    """.data(using: .utf8)!
             
             do{
                 let response = try JSONDecoder().decode(LoginResponse.self, from: newData!)
@@ -99,8 +86,37 @@ class LoginClient{
         }
         task.resume()
     }
+    
+    class func getUserData(key: String, completion: @escaping (Bool, Error?) -> Void){
+        let request = URLRequest(url: Endpoints.getUserData(value: key).url)
+        let session = URLSession.shared
+        let task = session.dataTask(with: request) { data, response, error in
+            if error != nil { // Handle error...
+                return
+            }
+            let range = 5..<data!.count
+            let newData = data?.subdata(in: range) /* subset response data! */
+            
+            do{
+                let userData = try JSONDecoder().decode(UserData.self, from: newData!)
+                print("userData Finish")
+                Auth.firstName = userData.firstName
+                Auth.lastName = userData.lastName
+                Auth.image = userData.image
+                DispatchQueue.main.async {
+                    completion(true, nil)
+                }
+            }catch{
+                print("user data not decoded")
+                DispatchQueue.main.async {
+                   completion(false, error)
+                }
+            }
+        }
+        task.resume()
+    }
  
-    class func udacityLogout(completion: (Bool, Error?) -> Void){
+    class func logout(completion: @escaping (Bool, Error?) -> Void){
         var request = URLRequest(url: LoginClient.Endpoints.udacityLogin.url)
         request.httpMethod = "DELETE"
         var xsrfCookie: HTTPCookie? = nil
@@ -114,16 +130,23 @@ class LoginClient{
         let session = URLSession.shared
         let task = session.dataTask(with: request) { data, response, error in
             if error != nil {
-                // Handle error…
-                print("logout error")
+                DispatchQueue.main.async {
+                    completion(false, error)
+                }
                 return
             }
             let range = 5..<data!.count
             let newData = data?.subdata(in: range) /* subset response data! */
             print(String(data: newData!, encoding: .utf8)!)
+            // TODO: DECODE HANDLING
             
+            Auth.sessionId = ""
+            Auth.key = ""
+            Auth.registered = false
+            DispatchQueue.main.async {
+                completion(true, nil)
+            }
         }
         task.resume()
     }
-    
 }
