@@ -157,7 +157,7 @@ extension MapVC: MKMapViewDelegate{
           
         }
         else {
-            print("annotation view")
+            print("annotation view d")
             pinView!.annotation = annotation
         }
         pinView!.image = UIImage(named: "pin")
