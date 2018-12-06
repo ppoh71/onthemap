@@ -34,4 +34,20 @@ class Utilities{
             return false
         }
     }
+    
+    class func addHttp(urlString: String) -> URL?{
+        guard URL(string: urlString) != nil else{
+            print("guard url addHttp")
+            return nil
+        }
+        
+        if urlString.hasPrefix("https://") || urlString.hasPrefix("http://"){
+            let url = URL(string: urlString)
+            return url
+        }else {
+            let correctedURL = "http://\(urlString)"
+            let url = URL(string: correctedURL)
+            return url
+        }
+    }
 }

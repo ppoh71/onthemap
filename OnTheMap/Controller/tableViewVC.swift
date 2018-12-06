@@ -102,7 +102,7 @@ extension tableViewVC:  UITableViewDelegate, UITableViewDataSource{
         let cell = tableView.dequeueReusableCell(withIdentifier: "LocationCell")!
         if let location = locations[(indexPath as IndexPath).row] as Location? {
             cell.textLabel?.text = "\(location.firstName) \(location.lastName)"
-            cell.detailTextLabel?.text = location.mapString
+            cell.detailTextLabel?.text = "\(location.mapString) (\(location.mediaURL))"
             cell.imageView?.image = UIImage(named: "pin")
         }
         return cell
@@ -111,7 +111,17 @@ extension tableViewVC:  UITableViewDelegate, UITableViewDataSource{
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let location = locations[(indexPath as IndexPath).row] as Location? {
-            print("open url")
+            
+            if !Utilities.verifyUrl(urlString: location.mediaURL){
+                showAlert(title: "Website Check", message: CustomError.urlNotValid.errorDescription!)
+                return
+            }
+            
+            if let urlHttp = Utilities.addHttp(urlString: location.mediaURL){
+                UIApplication.shared.open(urlHttp, options: [:], completionHandler: nil)
+            } else{
+                showAlert(title: "Website Check", message: CustomError.urlNotValid.errorDescription!)
+            }
         }
     }
 }

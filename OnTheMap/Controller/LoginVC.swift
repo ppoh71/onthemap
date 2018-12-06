@@ -30,15 +30,18 @@ class LoginVC: UIViewController {
     }
 
     @IBAction func loginButtonTapped(_ sender: Any) {
-        print("login tapped")
-        isLoggingIn(true)
-        //performSegue(withIdentifier: "LoginSuccessSegue", sender: nil) // debug shortcut
-        
-        if let email = emailTextfield.text, let password = passwordTextfield.text{
-            LoginClient.login(username: email, password: password, completion: requestHandlerLogin(response:error:))
-        }else{
-            showAlert(title: "Login Faliure", message: "Please Provide Your Login Credentials!")
+        guard let username =  emailTextfield.text, !username.isEmpty else {
+            showAlert(title: "Login Faliure", message: "Please Provide Your Login Credentials! (Username is empty?)")
+            return
         }
+        
+        guard let password =  passwordTextfield.text, !password.isEmpty else {
+            showAlert(title: "Login Faliure", message: "Please Provide Your Login Credentials! (Password is empty?)")
+            return
+        }
+        
+        isLoggingIn(true)
+        LoginClient.login(username: username, password: password, completion: requestHandlerLogin(response:error:))
     }
     
     func requestHandlerLogin(response: LoginResponse?, error: Error?){

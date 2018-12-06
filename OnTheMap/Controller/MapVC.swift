@@ -172,9 +172,14 @@ extension MapVC: MKMapViewDelegate{
         }
         
         if control == view.rightCalloutAccessoryView {
-            let app = UIApplication.shared
             if let toOpen = view.annotation?.subtitle! {
-                app.open(URL(string: toOpen)!, options: [:], completionHandler: nil)
+               if let urlHttp = Utilities.addHttp(urlString: toOpen){
+                UIApplication.shared.open(urlHttp, options: [:], completionHandler: nil)
+               } else{
+                showAlert(title: "Website Check", message: CustomError.urlNotValid.errorDescription!)
+                }
+            } else{
+                showAlert(title: "Website Check", message: CustomError.urlNotValid.errorDescription!)
             }
         }
     }
