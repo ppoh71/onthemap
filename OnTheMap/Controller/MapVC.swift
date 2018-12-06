@@ -30,11 +30,11 @@ class MapVC: UIViewController{
     @IBAction func logoutButtonTapped(_ sender: Any) {
         print("Logout Button")
         LoginClient.logout(completion: completionHandlerLogout(success:error:))
-
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -97,7 +97,6 @@ class MapVC: UIViewController{
 
     func setup(){
         activityView.layer.cornerRadius = 10
-        mapView.delegate = self
         self.tabBarController?.tabBar.isHidden = false
         
         //get locations
@@ -120,10 +119,6 @@ class MapVC: UIViewController{
             let coordinateRegion = Utilities.centerMapOnLocation(distance: 3000000, latitude: 41.89193, longitude: 12.51133)
             self.mapView.setRegion(coordinateRegion, animated: true)
         }
-    }
-    
-    func isUpdateingAnnotations(isUpdating: Bool){
-       
     }
     
     func showActivity(activityText: String){
@@ -157,13 +152,15 @@ extension MapVC: MKMapViewDelegate{
         if pinView == nil {
             pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
             pinView!.canShowCallout = true
-            pinView!.pinColor = .purple
             pinView!.rightCalloutAccessoryView = UIButton(type: .infoDark)
+            pinView!.pinTintColor = UIColor(red: 0.3, green: 0.6, blue: 0.8, alpha: 1.0)
+          
         }
         else {
             print("annotation view")
             pinView!.annotation = annotation
         }
+        pinView!.image = UIImage(named: "pin")
         return pinView
     }
 

@@ -48,12 +48,10 @@ class AddLocationVC: UIViewController {
     @IBAction func findLocationButtonTapped(_ sender: Any) {
         switch findLocationButton.tag{
             case 0: //find loaction
-                print("Button 0")
                 if let address = findLocationTextfield.text {
                     getGeoCoordinates(forAddress: address, completion: requestHandlerGeoLocation(location:error:))
                 }
             case 1: //back to find location action
-                print("Button 1")
                 setActionState(state: .findLocationAction)
             default:
                 print("do nothing")
@@ -85,13 +83,10 @@ class AddLocationVC: UIViewController {
         
         self.activityText.text = "Post Location Successful"
         self.activitySpinner.stopAnimating()
+        
         //go back to mapview & center map wiht coords from added location
-        let navigationCount = self.navigationController!.viewControllers.count
-        if let mapVC = self.navigationController!.viewControllers[navigationCount-2] as? MapVC{
-            mapVC.addedLocation = CLLocationCoordinate2D(latitude: addLatitude ?? 0, longitude: addLongitude ?? 0)
-            mapVC.seagueFromAddLocationSuccess = true
-            self.navigationController?.popToViewController(mapVC, animated: true)
-        }
+        segueBackAfterAddLocationSuccess()
+
     }
     
     func requestHandlerGeoLocation(location: CLLocationCoordinate2D?, error: Error?){
@@ -100,7 +95,7 @@ class AddLocationVC: UIViewController {
             return
         }
         
-        //set for adding to parse via Post
+        //set for adding later via post
         self.addLatitude = location.latitude
         self.addLongitude = location.longitude
         
@@ -113,7 +108,7 @@ class AddLocationVC: UIViewController {
         setActionState(state: .addLocationAction)
     }
     
-    
+    // MARK: Map Functions
     func getGeoCoordinates(forAddress address: String, completion: @escaping (CLLocationCoordinate2D?, Error?) -> Void) {
         let geocoder = CLGeocoder()
         geocoder.geocodeAddressString(address) {
@@ -123,7 +118,6 @@ class AddLocationVC: UIViewController {
                 completion(nil, error)
                 return
             }
-            
             completion(placemarks?.first?.location?.coordinate, nil)
         }
     }
@@ -137,12 +131,7 @@ class AddLocationVC: UIViewController {
         self.mapView.addAnnotation(annotation)
     }
     
-    // MARK: Helper Functions
-    func showAlert(title: String, message: String){
-        let alert = Alerts.defineAlert(title: title, message: message)
-        self.present(alert, animated: true)
-    }
-    
+    // MARK: Basic Functions
     func setup(){
         hideActivity()
         findLocationButton.tag = 0
@@ -155,6 +144,22 @@ class AddLocationVC: UIViewController {
         addLocationButton.layer.cornerRadius = Utilities.cornerRadius
         foundLocationLabel.text = ""
         activityView.layer.cornerRadius = 10
+    }
+    
+    func segueBackAfterAddLocationSuccess(){
+        guard let navigationCount = self.navigationController?.viewControllers.count else {print("no navigation controller count"); return}
+        
+        //back to where we are coming from
+        if let mapVC = self.navigationController!.viewControllers[navigationCount-2] as? MapVC{
+            mapVC.addedLocation = CLLocationCoordinate2D(latitude: addLatitude ?? 0, longitude: addLongitude ?? 0)
+            mapVC.seagueFromAddLocationSuccess = true
+            self.navigationController?.popToViewController(mapVC, animated: true)
+            
+        }
+        
+        if let tableViewVC = self.navigationController!.viewControllers[navigationCount-2] as? tableViewVC{
+            self.navigationController?.popToViewController(tableViewVC, animated: true)
+        }
     }
     
     func setActionState(state: ActionState){
@@ -199,6 +204,11 @@ class AddLocationVC: UIViewController {
         }
     }
    
+    func showAlert(title: String, message: String){
+        let alert = Alerts.defineAlert(title: title, message: message)
+        self.present(alert, animated: true)
+    }
+    
     func showActivity(activityText: String){
         self.activityText.text = activityText
         activitySpinner.startAnimating()
@@ -243,7 +253,6 @@ extension AddLocationVC: MKMapViewDelegate{
 
 extension AddLocationVC:  UITextFieldDelegate{
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        print("text delegate end")
         textField.endEditing(true)
         return false
     }
