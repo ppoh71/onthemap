@@ -13,8 +13,6 @@ class tableViewVC: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var spinner: UIActivityIndicatorView!
     
-    var locations = [Location]()
-    
     // MARK: - Overrides
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,11 +21,12 @@ class tableViewVC: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         setup()
+        print("show model")
+        print(StudentInformation.studentLocations)
     }
     
     // MARK: - IBActions
     @IBAction func logoutButtonTapped(_ sender: Any) {
-        print("Logout Button")
         showIndicator(true)
         LoginClient.logout(completion: completionHandlerLogout(success:error:))
     }
@@ -43,7 +42,7 @@ class tableViewVC: UIViewController {
             return
         }
         
-        self.locations = locations.results
+        StudentInformation.studentLocations = locations.results
         self.tableView.reloadData()
         self.showIndicator(false)
     }
@@ -98,12 +97,12 @@ extension tableViewVC:  UITableViewDelegate, UITableViewDataSource{
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return locations.count
+        return StudentInformation.studentLocations.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "LocationCell")!
-        if let location = locations[(indexPath as IndexPath).row] as Location? {
+        if let location = StudentInformation.studentLocations[(indexPath as IndexPath).row] as StudentLocation? {
             cell.textLabel?.text = "\(location.firstName) \(location.lastName)"
             cell.detailTextLabel?.text = "\(location.mapString) (\(location.mediaURL))"
             cell.imageView?.image = UIImage(named: "pin")
@@ -112,7 +111,7 @@ extension tableViewVC:  UITableViewDelegate, UITableViewDataSource{
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if let location = locations[(indexPath as IndexPath).row] as Location? {
+        if let location = StudentInformation.studentLocations[(indexPath as IndexPath).row] as StudentLocation? {
             Utilities.openUrl(urlString: location.mediaURL, completion: {(success) in
                 if !success{
                     self.showAlert(title: "Website Check", message: CustomError.urlNotValid.errorDescription!)

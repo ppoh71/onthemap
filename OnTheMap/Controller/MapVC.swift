@@ -16,10 +16,10 @@ class MapVC: UIViewController{
     @IBOutlet weak var activityText: UITextView!
     @IBOutlet weak var activitySpinner: UIActivityIndicatorView!
     
-    //var locations = [Location]()
     var annotations = [MKPointAnnotation]()
     var seagueFromAddLocationSuccess = false
     var addedLocation: CLLocationCoordinate2D?
+    let studentInformations = StudentInformation()
     
     // MARK: - Overrides
     override func viewDidLoad() {
@@ -33,7 +33,7 @@ class MapVC: UIViewController{
     // MARK: - IBActions
     @IBAction func refreshButtonTapped(_ sender: Any) {
         showActivity(activityText: "updating map locations")
-        ParseClient.getLocation(limit: 20, completion: completionHandlerLocations(locations:error:))
+        ParseClient.getLocation(limit: 100, completion: completionHandlerLocations(locations:error:))
     }
     
     @IBAction func logoutButtonTapped(_ sender: Any) {
@@ -48,9 +48,11 @@ class MapVC: UIViewController{
             hideActivity()
             return
         }
-        createAnnotaions(locations: locations.results)
-        hideActivity()
+        
+        StudentInformation.studentLocations = locations.results
+        createAnnotaions(locations: StudentInformation.studentLocations)
         checkIfSeagueFromAddedLocation(success: seagueFromAddLocationSuccess)
+        hideActivity()
     }
     
     func completionHandlerLogout(success: Bool, error: Error?){
@@ -71,7 +73,7 @@ class MapVC: UIViewController{
         mapView.setRegion(coordinateRegion, animated: true)
     }
     
-    func createAnnotaions(locations: [Location]){
+    func createAnnotaions(locations: [StudentLocation]){
         for location in locations{
             let annotation = MKPointAnnotation()
             annotation.coordinate = CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)

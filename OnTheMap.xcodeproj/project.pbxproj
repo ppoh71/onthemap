@@ -15,6 +15,8 @@
 		A92E253121B694360011F8F0 /* UserResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92E253021B694360011F8F0 /* UserResponse.swift */; };
 		A92E253321B6AE020011F8F0 /* PostLocationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92E253221B6AE020011F8F0 /* PostLocationRequest.swift */; };
 		A92E253821B88D530011F8F0 /* tableViewVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92E253721B88D530011F8F0 /* tableViewVC.swift */; };
+		A952FC2B21BC7C3F00E24942 /* StudentInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A952FC2A21BC7C3F00E24942 /* StudentInformation.swift */; };
+		A952FC2E21BC80E900E24942 /* StudentLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A952FC2D21BC80E900E24942 /* StudentLocation.swift */; };
 		A9A2A40D21B0419900FC2D17 /* LocationResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A2A40C21B0419900FC2D17 /* LocationResponse.swift */; };
 		A9A6FEC421AEBE8700941EF4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A6FEC321AEBE8700941EF4 /* AppDelegate.swift */; };
 		A9A6FEC621AEBE8700941EF4 /* LoginVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A6FEC521AEBE8700941EF4 /* LoginVC.swift */; };
@@ -58,6 +60,8 @@
 		A92E253021B694360011F8F0 /* UserResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserResponse.swift; sourceTree = "<group>"; };
 		A92E253221B6AE020011F8F0 /* PostLocationRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostLocationRequest.swift; sourceTree = "<group>"; };
 		A92E253721B88D530011F8F0 /* tableViewVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = tableViewVC.swift; sourceTree = "<group>"; };
+		A952FC2A21BC7C3F00E24942 /* StudentInformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudentInformation.swift; sourceTree = "<group>"; };
+		A952FC2D21BC80E900E24942 /* StudentLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudentLocation.swift; sourceTree = "<group>"; };
 		A9A2A40C21B0419900FC2D17 /* LocationResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationResponse.swift; sourceTree = "<group>"; };
 		A9A6FEC021AEBE8700941EF4 /* OnTheMap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OnTheMap.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9A6FEC321AEBE8700941EF4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -123,6 +127,15 @@
 				A9A6FF0521B01B5A00941EF4 /* ParseClient.swift */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		A952FC2C21BC7C4600E24942 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				A952FC2A21BC7C3F00E24942 /* StudentInformation.swift */,
+				A952FC2D21BC80E900E24942 /* StudentLocation.swift */,
+			);
+			path = Data;
 			sourceTree = "<group>";
 		};
 		A9A6FEB721AEBE8700941EF4 = {
@@ -199,6 +212,7 @@
 		A9A6FEF321AEC4A600941EF4 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				A952FC2C21BC7C4600E24942 /* Data */,
 				A9A6FEFA21AED9A400941EF4 /* RequestModel */,
 				A9A6FEFD21AEE9A500941EF4 /* ResponseModel */,
 			);
@@ -376,6 +390,7 @@
 				A9A6FF0121AEFA9900941EF4 /* LoginErrorResponse.swift in Sources */,
 				A9A6FEFF21AEF81C00941EF4 /* LoginResponse.swift in Sources */,
 				A9A2A40D21B0419900FC2D17 /* LocationResponse.swift in Sources */,
+				A952FC2E21BC80E900E24942 /* StudentLocation.swift in Sources */,
 				A92E253321B6AE020011F8F0 /* PostLocationRequest.swift in Sources */,
 				A9A6FEFC21AED9D700941EF4 /* LoginRequest.swift in Sources */,
 				A9A6FEC421AEBE8700941EF4 /* AppDelegate.swift in Sources */,
@@ -386,6 +401,7 @@
 				A9A6FEF921AED61600941EF4 /* LoginClient.swift in Sources */,
 				A92E252921B41D130011F8F0 /* ParseErrorResponse.swift in Sources */,
 				A92E252F21B5CFF20011F8F0 /* PostLocationResponse.swift in Sources */,
+				A952FC2B21BC7C3F00E24942 /* StudentInformation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
