@@ -9,10 +9,23 @@
 import UIKit
 
 class tableViewVC: UIViewController {
+    // MARK: - Outlets, Vars, Enum
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var spinner: UIActivityIndicatorView!
+    
     var locations = [Location]()
     
+    // MARK: - Overrides
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // Do any additional setup after loading the view.
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        setup()
+    }
+    
+    // MARK: - IBActions
     @IBAction func logoutButtonTapped(_ sender: Any) {
         print("Logout Button")
         showIndicator(true)
@@ -21,15 +34,6 @@ class tableViewVC: UIViewController {
     
     @IBAction func refreshButtonTapped(_ sender: Any) {
         loadLocations()
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view.
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        setup()
     }
     
     // MARK: Completion Handler Functions
@@ -42,7 +46,6 @@ class tableViewVC: UIViewController {
         self.locations = locations.results
         self.tableView.reloadData()
         self.showIndicator(false)
-        print("Location Count \(self.locations.count)")
     }
     
     func completionHandlerLogout(success: Bool, error: Error?){
@@ -95,12 +98,10 @@ extension tableViewVC:  UITableViewDelegate, UITableViewDataSource{
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        print("location count")
         return locations.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        print("table cells")
         let cell = tableView.dequeueReusableCell(withIdentifier: "LocationCell")!
         if let location = locations[(indexPath as IndexPath).row] as Location? {
             cell.textLabel?.text = "\(location.firstName) \(location.lastName)"
@@ -110,15 +111,11 @@ extension tableViewVC:  UITableViewDelegate, UITableViewDataSource{
         return cell
     }
 
-
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let location = locations[(indexPath as IndexPath).row] as Location? {
-            
             Utilities.openUrl(urlString: location.mediaURL, completion: {(success) in
                 if !success{
-                    DispatchQueue.main.async {
-                        self.showAlert(title: "Website Check", message: CustomError.urlNotValid.errorDescription!)
-                    }
+                    self.showAlert(title: "Website Check", message: CustomError.urlNotValid.errorDescription!)
                 }
             })
         }

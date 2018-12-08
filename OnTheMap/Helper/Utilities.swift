@@ -37,7 +37,6 @@ class Utilities{
     
     class func addHttp(urlString: String) -> URL?{
         guard URL(string: urlString) != nil else{
-            print("guard url addHttp")
             return nil
         }
         
@@ -52,25 +51,29 @@ class Utilities{
     }
     
     class func openUrl(urlString: String, completion: @escaping (Bool) -> Void){
-        
         if !Utilities.verifyUrl(urlString: urlString){
-            completion(false)
-            print("not verified")
+            DispatchQueue.main.async {
+                completion(false)
+            }
             return
         }
         
         if let urlHttp = Utilities.addHttp(urlString: urlString){
             UIApplication.shared.open(urlHttp, options: [:], completionHandler: {(success) in
                 if success{
-                    print("website opend")
-                    completion(true)
+                    DispatchQueue.main.async {
+                        completion(true)
+                    }
                 }else{
+                    DispatchQueue.main.async {
                     completion(false)
+                    }
                 }
             })
         } else{
-            completion(false)
-            print("not open")
+            DispatchQueue.main.async {
+                completion(false)
+            }
         }
     }
 }

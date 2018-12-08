@@ -38,6 +38,3 @@ class Location: Codable{
 struct LocationResponse: Codable{
     let results: [Location]
 }
-
-
-//{"objectId":"p7rl7PkRtT","createdAt":"2018-12-02T01:15:33.464Z","updatedAt":"2018-12-02T01:15:33.464Z"}

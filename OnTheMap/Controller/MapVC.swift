@@ -10,38 +10,36 @@ import UIKit
 import MapKit
 
 class MapVC: UIViewController{
-
+    // MARK: - Outlets, Vars, Enum
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var activityView: UIView!
     @IBOutlet weak var activityText: UITextView!
     @IBOutlet weak var activitySpinner: UIActivityIndicatorView!
     
-    var locations = [Location]()
+    //var locations = [Location]()
     var annotations = [MKPointAnnotation]()
     var seagueFromAddLocationSuccess = false
     var addedLocation: CLLocationCoordinate2D?
     
-    @IBAction func refreshButtonTapped(_ sender: Any) {
-        print("refresh buttun")
-        showActivity(activityText: "updating map locations")
-        ParseClient.getLocation(limit: 20, completion: completionHandlerLocations(locations:error:))
-    }
-    
-    @IBAction func logoutButtonTapped(_ sender: Any) {
-        print("Logout Button")
-        showActivity(activityText: "logging out")
-        LoginClient.logout(completion: completionHandlerLogout(success:error:))
-    }
-    
+    // MARK: - Overrides
     override func viewDidLoad() {
         super.viewDidLoad()
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         setup()
     }
     
+    // MARK: - IBActions
+    @IBAction func refreshButtonTapped(_ sender: Any) {
+        showActivity(activityText: "updating map locations")
+        ParseClient.getLocation(limit: 20, completion: completionHandlerLocations(locations:error:))
+    }
+    
+    @IBAction func logoutButtonTapped(_ sender: Any) {
+        showActivity(activityText: "logging out")
+        LoginClient.logout(completion: completionHandlerLogout(success:error:))
+    }
     
     // MARK: Completion Handler Functions
     func completionHandlerLocations(locations: LocationResponse?, error: Error?){
@@ -74,52 +72,44 @@ class MapVC: UIViewController{
     }
     
     func createAnnotaions(locations: [Location]){
-        print("create annotaions")
         for location in locations{
-            
-            //create Anootation
             let annotation = MKPointAnnotation()
             annotation.coordinate = CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)
             annotation.title = "\(location.firstName) \(location.lastName)"
             annotation.subtitle = location.mediaURL
-            
-            //add annotation to array for adding to maap in delegate func
             annotations.append(annotation)
         }
-        
-        //add annotations to map
         self.mapView.addAnnotations(annotations)
     }
     
     // MARK: Basic Functions
+    func setup(){
+        //ui
+        activityView.layer.cornerRadius = 10
+        self.tabBarController?.tabBar.isHidden = false
+        
+        //get locations on start
+        hideActivity()
+        showActivity(activityText: "updating map locations")
+        ParseClient.getLocation(limit: 100, completion: completionHandlerLocations(locations:error:))
+        
+        //center to europe on start, has the most pins, good for testing
+        let coordinateRegion = Utilities.centerMapOnLocation(distance: 3000000, latitude: 41.89193, longitude: 12.51133)
+        self.mapView.setRegion(coordinateRegion, animated: true)
+    }
+    
     func showAlert(title: String, message: String){
         let alert = Alerts.defineAlert(title: title, message: message)
         self.present(alert, animated: true)
     }
 
-    func setup(){
-        activityView.layer.cornerRadius = 10
-        self.tabBarController?.tabBar.isHidden = false
-        
-        //get locations
-        hideActivity()
-        showActivity(activityText: "updating map locations")
-        ParseClient.getLocation(limit: 100, completion: completionHandlerLocations(locations:error:))
-    }
-    
     func checkIfSeagueFromAddedLocation(success: Bool){
-        if success{
-            print("seagued from added location & center to coords")
-            print(addedLocation as Any)
+        if success{ //center map to added location
             if let latitude = addedLocation?.latitude, let longitude = addedLocation?.longitude{
                 let coordinateRegion = Utilities.centerMapOnLocation(distance: 3000000, latitude: latitude, longitude: longitude)
                 self.mapView.setRegion(coordinateRegion, animated: true)
             }
             seagueFromAddLocationSuccess = false //reset
-        }else{
-            print("standard center map")
-            let coordinateRegion = Utilities.centerMapOnLocation(distance: 3000000, latitude: 41.89193, longitude: 12.51133)
-            self.mapView.setRegion(coordinateRegion, animated: true)
         }
     }
     
@@ -127,15 +117,17 @@ class MapVC: UIViewController{
         self.activityText.text = activityText
         activitySpinner.startAnimating()
         self.activityView.alpha = 1
+        
         UIView.animate(withDuration: 0.3, animations: {
-            self.view.layoutIfNeeded()
             self.mapView.alpha = 0.5
+            self.view.layoutIfNeeded()
         })
     }
     
     func hideActivity(){
         activitySpinner.stopAnimating()
         self.activityView.alpha = 0
+        
         UIView.animate(withDuration: 0.3, animations: {
             self.mapView.alpha = 1
             self.view.layoutIfNeeded()
@@ -156,33 +148,22 @@ extension MapVC: MKMapViewDelegate{
             pinView!.canShowCallout = true
             pinView!.rightCalloutAccessoryView = UIButton(type: .infoDark)
             pinView!.pinTintColor = UIColor(red: 0.3, green: 0.6, blue: 0.8, alpha: 1.0)
-          
         }
         else {
-            print("annotation view d")
             pinView!.annotation = annotation
         }
-        pinView!.image = UIImage(named: "pin")
         return pinView
     }
 
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
-        print("click on annotations")
-        if !Utilities.verifyUrl(urlString: view.annotation?.subtitle!){
-            showAlert(title: "Website Check", message: CustomError.urlNotValid.errorDescription!)
-            return
-        }
-        
         if control == view.rightCalloutAccessoryView {
             if let toOpen = view.annotation?.subtitle! {
                 Utilities.openUrl(urlString: toOpen, completion: {(success) in
                     if !success{
-                        DispatchQueue.main.async {
-                            self.showAlert(title: "Website Check", message: CustomError.urlNotValid.errorDescription!)
-                        }
+                        self.showAlert(title: "Website Check", message: CustomError.urlNotValid.errorDescription!)
                     }
                 })
-            } else{
+            } else {
                 showAlert(title: "Website Check", message: CustomError.urlNotValid.errorDescription!)
             }
         }

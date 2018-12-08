@@ -15,6 +15,7 @@ enum CustomError: Error{
     case locationNotFound
     case urlNotValid
     case postLocationFailed
+    case findAddressTextEmpty
 }
 
 extension CustomError: LocalizedError{
@@ -32,6 +33,8 @@ extension CustomError: LocalizedError{
             return "Unable to open URL"
         case .postLocationFailed:
             return "Posting of location failed"
+        case .findAddressTextEmpty:
+            return "Pleaase provide an address or location"
         }
     }
 }

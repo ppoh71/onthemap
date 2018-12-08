@@ -10,6 +10,8 @@ import Foundation
 
 class LoginClient{
     
+    static let signupURL = URL(string: "https://auth.udacity.com/sign-up?next=https%3A%2F%2Fclassroom.udacity.com%2Fauthenticated")!
+    
     struct Auth{
         static var registered: Bool = false
         static var key: String = ""
@@ -59,7 +61,6 @@ class LoginClient{
             
             let range = 5..<data!.count
             let newData = data?.subdata(in: range) /* subset response data! */
-            print(String(data: newData!, encoding: .utf8)!)
             
             do{
                 let response = try JSONDecoder().decode(LoginResponse.self, from: newData!)
@@ -70,7 +71,7 @@ class LoginClient{
                     completion(response, nil)
                 }
             }catch{
-                print("decode error")
+
                 do{
                     let errorResponse = try JSONDecoder().decode(LoginErrorResponse.self, from: newData!)
                     print(errorResponse)

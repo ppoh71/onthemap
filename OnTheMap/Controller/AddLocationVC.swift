@@ -37,7 +37,6 @@ class AddLocationVC: UIViewController {
     // MARK: Overrides
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -48,9 +47,11 @@ class AddLocationVC: UIViewController {
     @IBAction func findLocationButtonTapped(_ sender: Any) {
         switch findLocationButton.tag{
             case 0: //find loaction
-                if let address = findLocationTextfield.text {
+                if let address = findLocationTextfield.text, !address.isEmpty {
                     getGeoCoordinates(forAddress: address, completion: requestHandlerGeoLocation(location:error:))
-                }
+                } else {
+                   showAlert(title: "No Location Text", message: CustomError.findAddressTextEmpty.errorDescription!)
+            }
             case 1: //back to find location action
                 setActionState(state: .findLocationAction)
             default:
@@ -67,8 +68,10 @@ class AddLocationVC: UIViewController {
         
         if let latitude = addLatitude, let longitude = addLongitude, let mapString = findLocationTextfield.text {
             showActivity(activityText: "Posting Location")
+            
             let mediaURL = websiteTextfield.text ?? ""
-            let postLocation = PostLocationRequest(uniqueKey: "123", firstName: LoginClient.Auth.firstName, lastName: LoginClient.Auth.lastName, mapString: mapString, mediaURL: mediaURL, latitude: latitude, longitude: longitude )
+            let postLocation = PostLocationRequest(uniqueKey: NSUUID().uuidString, firstName: LoginClient.Auth.firstName, lastName: LoginClient.Auth.lastName, mapString: mapString, mediaURL: mediaURL, latitude: latitude, longitude: longitude )
+            
             ParseClient.postLocation(postLocation: postLocation, completion: requestHandlerPostLocation(postLocation:error:))
             view.endEditing(true) // close Keyboard
         }
@@ -84,7 +87,7 @@ class AddLocationVC: UIViewController {
         self.activityText.text = "Post Location Successful"
         self.activitySpinner.stopAnimating()
         
-        //go back to mapview & center map wiht coords from added location
+        //go back to mapview & center map with coords from added location
         segueBackAfterAddLocationSuccess()
 
     }
@@ -147,14 +150,13 @@ class AddLocationVC: UIViewController {
     }
     
     func segueBackAfterAddLocationSuccess(){
-        guard let navigationCount = self.navigationController?.viewControllers.count else {print("no navigation controller count"); return}
+        guard let navigationCount = self.navigationController?.viewControllers.count else { return }
         
         //back to where we are coming from
         if let mapVC = self.navigationController!.viewControllers[navigationCount-2] as? MapVC{
             mapVC.addedLocation = CLLocationCoordinate2D(latitude: addLatitude ?? 0, longitude: addLongitude ?? 0)
             mapVC.seagueFromAddLocationSuccess = true
             self.navigationController?.popToViewController(mapVC, animated: true)
-            
         }
         
         if let tableViewVC = self.navigationController!.viewControllers[navigationCount-2] as? tableViewVC{
@@ -167,9 +169,7 @@ class AddLocationVC: UIViewController {
         case .findLocationAction:
             findLocationButton.tag = ActionState.findLocationAction.rawValue
             animate(state: ActionState.findLocationAction)
-            print("Find Action State")
         case .addLocationAction:
-            print("Add Action State")
             findLocationButton.tag = ActionState.addLocationAction.rawValue
             foundLocationLabel.text = "Location found: \(findLocationTextfield.text!)"
             animate(state: ActionState.addLocationAction)

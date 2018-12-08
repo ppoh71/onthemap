@@ -86,13 +86,11 @@ class ParseClient{
                 DispatchQueue.main.async {
                     completion(postLocationResponse, nil)
                 }
-                print(postLocationResponse)
             }catch{
                 DispatchQueue.main.async {
                     completion(nil, error)
                 }
             }
-            //print(String(data: data, encoding: .utf8)!)
         }
         task.resume()
     }

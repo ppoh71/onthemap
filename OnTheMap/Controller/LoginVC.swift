@@ -9,19 +9,18 @@
 import UIKit
 
 class LoginVC: UIViewController {
-
+    // MARK: - Outlets, Vars, Enum
     @IBOutlet weak var emailTextfield: UITextField!
     @IBOutlet weak var passwordTextfield: UITextField!
     @IBOutlet weak var signUp: UILabel!
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var spinner: UIActivityIndicatorView!
     
-    let signupURL = URL(string: "https://auth.udacity.com/sign-up?next=https%3A%2F%2Fclassroom.udacity.com%2Fauthenticated")!
     let activeLogin = false
     
+    // MARK: - Overrides
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
         setup()
     }
     
@@ -29,6 +28,7 @@ class LoginVC: UIViewController {
         isLoggingIn(false)
     }
 
+    // MARK: - IBActions
     @IBAction func loginButtonTapped(_ sender: Any) {
         guard let username =  emailTextfield.text, !username.isEmpty else {
             showAlert(title: "Login Faliure", message: "Please Provide Your Login Credentials! (Username is empty?)")
@@ -44,6 +44,7 @@ class LoginVC: UIViewController {
         LoginClient.login(username: username, password: password, completion: requestHandlerLogin(response:error:))
     }
     
+    // MARK: - Request Handler
     func requestHandlerLogin(response: LoginResponse?, error: Error?){
         if error != nil{
             showAlert(title: "Login failure", message: error?.localizedDescription ?? "Login Failure")
@@ -62,13 +63,13 @@ class LoginVC: UIViewController {
         performSegue(withIdentifier: "LoginSuccessSegue", sender: nil)
     }
     
+    // MARK: - Basic Functions
     func setup(){
         //signup label add gestures
         let tap = UITapGestureRecognizer(target: self, action: #selector(openSignupLink))
         signUp.isUserInteractionEnabled = true
         signUp.addGestureRecognizer(tap)
-        print(Utilities.cornerRadius)
-        print("setupt")
+
         //ui
         emailTextfield.layer.cornerRadius = Utilities.cornerRadius
         passwordTextfield.layer.cornerRadius = Utilities.cornerRadius
@@ -78,7 +79,7 @@ class LoginVC: UIViewController {
     }
     
     @objc func openSignupLink(){
-        UIApplication.shared.open(signupURL, options: [:], completionHandler: nil)
+        UIApplication.shared.open(LoginClient.signupURL, options: [:], completionHandler: nil)
     }
     
     func showAlert(title: String, message: String){
@@ -87,7 +88,6 @@ class LoginVC: UIViewController {
     }
     
     func isLoggingIn(_ activeLogin: Bool){
-        
         if activeLogin{
              spinner.startAnimating()
         }else{
@@ -99,4 +99,3 @@ class LoginVC: UIViewController {
         loginButton.isEnabled = !activeLogin
     }
 }
-
