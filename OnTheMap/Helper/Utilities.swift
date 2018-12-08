@@ -50,4 +50,27 @@ class Utilities{
             return url
         }
     }
+    
+    class func openUrl(urlString: String, completion: @escaping (Bool) -> Void){
+        
+        if !Utilities.verifyUrl(urlString: urlString){
+            completion(false)
+            print("not verified")
+            return
+        }
+        
+        if let urlHttp = Utilities.addHttp(urlString: urlString){
+            UIApplication.shared.open(urlHttp, options: [:], completionHandler: {(success) in
+                if success{
+                    print("website opend")
+                    completion(true)
+                }else{
+                    completion(false)
+                }
+            })
+        } else{
+            completion(false)
+            print("not open")
+        }
+    }
 }

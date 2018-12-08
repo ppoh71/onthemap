@@ -15,6 +15,7 @@ class tableViewVC: UIViewController {
     
     @IBAction func logoutButtonTapped(_ sender: Any) {
         print("Logout Button")
+        showIndicator(true)
         LoginClient.logout(completion: completionHandlerLogout(success:error:))
     }
     
@@ -46,6 +47,7 @@ class tableViewVC: UIViewController {
     
     func completionHandlerLogout(success: Bool, error: Error?){
         if success{
+            showIndicator(false)
             self.navigationController?.popViewController(animated: true)
             self.dismiss(animated: true, completion: nil)
         }else{
@@ -61,7 +63,7 @@ class tableViewVC: UIViewController {
     
     func loadLocations(){
        showIndicator(true)
-       ParseClient.getLocation(limit: 20, completion: completionHandlerLocations(locations:error:))
+       ParseClient.getLocation(limit: 1000, completion: completionHandlerLocations(locations:error:))
     }
     
     func showIndicator(_ show: Bool){
@@ -112,16 +114,13 @@ extension tableViewVC:  UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let location = locations[(indexPath as IndexPath).row] as Location? {
             
-            if !Utilities.verifyUrl(urlString: location.mediaURL){
-                showAlert(title: "Website Check", message: CustomError.urlNotValid.errorDescription!)
-                return
-            }
-            
-            if let urlHttp = Utilities.addHttp(urlString: location.mediaURL){
-                UIApplication.shared.open(urlHttp, options: [:], completionHandler: nil)
-            } else{
-                showAlert(title: "Website Check", message: CustomError.urlNotValid.errorDescription!)
-            }
+            Utilities.openUrl(urlString: location.mediaURL, completion: {(success) in
+                if !success{
+                    DispatchQueue.main.async {
+                        self.showAlert(title: "Website Check", message: CustomError.urlNotValid.errorDescription!)
+                    }
+                }
+            })
         }
     }
 }

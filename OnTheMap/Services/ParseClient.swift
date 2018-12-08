@@ -31,7 +31,7 @@ class ParseClient{
         }
     }
     
-    class func getLocation(limit: Int, completion: @escaping (LocationResponse?, Error?)->Void){
+    class func getLocation(limit: Int, completion: @escaping (LocationResponse?, Error?) -> Void){
         var request = URLRequest(url: Endpoints.getLocation(value: limit).url)
         request.addValue(AppKey, forHTTPHeaderField: "X-Parse-Application-Id")
         request.addValue(RestApiKey, forHTTPHeaderField: "X-Parse-REST-API-Key")
@@ -65,7 +65,7 @@ class ParseClient{
         task.resume()
     }
     
-    class func postLocation(postLocation: PostLocationRequest, completion: @escaping (PostLocationResponse?, Error?)-> Void){
+    class func postLocation(postLocation: PostLocationRequest, completion: @escaping (PostLocationResponse?, Error?) -> Void){
         var request = URLRequest(url: Endpoints.postLocation.url)
         request.httpMethod = "POST"
         request.addValue("QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr", forHTTPHeaderField: "X-Parse-Application-Id")

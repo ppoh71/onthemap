@@ -122,7 +122,8 @@
 		A92E253621B807B70011F8F0 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				A9A6FEF521AED12300941EF4 /* NetworkClients */,
+				A9A6FEF821AED61600941EF4 /* LoginClient.swift */,
+				A9A6FF0521B01B5A00941EF4 /* ParseClient.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -215,15 +216,6 @@
 				A9A6FECC21AEBE8800941EF4 /* LaunchScreen.storyboard */,
 			);
 			path = Assets;
-			sourceTree = "<group>";
-		};
-		A9A6FEF521AED12300941EF4 /* NetworkClients */ = {
-			isa = PBXGroup;
-			children = (
-				A9A6FEF821AED61600941EF4 /* LoginClient.swift */,
-				A9A6FF0521B01B5A00941EF4 /* ParseClient.swift */,
-			);
-			path = NetworkClients;
 			sourceTree = "<group>";
 		};
 		A9A6FEFA21AED9A400941EF4 /* RequestModel */ = {

@@ -29,6 +29,7 @@ class MapVC: UIViewController{
     
     @IBAction func logoutButtonTapped(_ sender: Any) {
         print("Logout Button")
+        showActivity(activityText: "logging out")
         LoginClient.logout(completion: completionHandlerLogout(success:error:))
     }
     
@@ -56,6 +57,7 @@ class MapVC: UIViewController{
     
     func completionHandlerLogout(success: Bool, error: Error?){
         if success{
+            hideActivity()
             self.navigationController?.popViewController(animated: true)
             self.dismiss(animated: true, completion: nil)
         }else{
@@ -173,11 +175,13 @@ extension MapVC: MKMapViewDelegate{
         
         if control == view.rightCalloutAccessoryView {
             if let toOpen = view.annotation?.subtitle! {
-               if let urlHttp = Utilities.addHttp(urlString: toOpen){
-                UIApplication.shared.open(urlHttp, options: [:], completionHandler: nil)
-               } else{
-                showAlert(title: "Website Check", message: CustomError.urlNotValid.errorDescription!)
-                }
+                Utilities.openUrl(urlString: toOpen, completion: {(success) in
+                    if !success{
+                        DispatchQueue.main.async {
+                            self.showAlert(title: "Website Check", message: CustomError.urlNotValid.errorDescription!)
+                        }
+                    }
+                })
             } else{
                 showAlert(title: "Website Check", message: CustomError.urlNotValid.errorDescription!)
             }
