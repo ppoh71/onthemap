@@ -1,5 +1,5 @@
 //
-//  StudentLocation.swift
+//  LogoutResponse.swift
 //  OnTheMap
 //
 //  Created by Peter Pohlmann on 08.12.18.
@@ -8,5 +8,6 @@
 
 import Foundation
 
-
-
+struct LogoutResponse: Codable{
+    let session: Session
+}

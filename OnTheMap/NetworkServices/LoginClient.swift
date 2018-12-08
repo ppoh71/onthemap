@@ -100,7 +100,6 @@ class LoginClient{
             
             do{
                 let userData = try JSONDecoder().decode(UserData.self, from: newData!)
-                print("userData Finish")
                 Auth.firstName = userData.firstName
                 Auth.lastName = userData.lastName
                 Auth.image = userData.image
@@ -108,7 +107,6 @@ class LoginClient{
                     completion(true, nil)
                 }
             }catch{
-                print("user data not decoded")
                 DispatchQueue.main.async {
                    completion(false, error)
                 }
@@ -138,14 +136,19 @@ class LoginClient{
             }
             let range = 5..<data!.count
             let newData = data?.subdata(in: range) /* subset response data! */
-            print(String(data: newData!, encoding: .utf8)!)
-            // TODO: DECODE HANDLING
             
-            Auth.sessionId = ""
-            Auth.key = ""
-            Auth.registered = false
-            DispatchQueue.main.async {
-                completion(true, nil)
+            do{
+                _ = try JSONDecoder().decode(LogoutResponse.self, from: newData!)
+                Auth.sessionId = ""
+                Auth.key = ""
+                Auth.registered = false
+                DispatchQueue.main.async {
+                    completion(true, nil)
+                }
+            }catch{
+                DispatchQueue.main.async {
+                    completion(false, error)
+                }
             }
         }
         task.resume()

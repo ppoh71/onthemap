@@ -48,6 +48,7 @@ class AddLocationVC: UIViewController {
         switch findLocationButton.tag{
             case 0: //find loaction
                 if let address = findLocationTextfield.text, !address.isEmpty {
+                    showActivity(activityText: "searching location", mapAlpha: false)
                     getGeoCoordinates(forAddress: address, completion: requestHandlerGeoLocation(location:error:))
                 } else {
                    showAlert(title: "No Location Text", message: CustomError.findAddressTextEmpty.errorDescription!)
@@ -67,7 +68,7 @@ class AddLocationVC: UIViewController {
         }
         
         if let latitude = addLatitude, let longitude = addLongitude, let mapString = findLocationTextfield.text {
-            showActivity(activityText: "Posting Location")
+            showActivity(activityText: "Posting Location", mapAlpha: true)
             
             let mediaURL = websiteTextfield.text ?? ""
             let postLocation = PostLocationRequest(uniqueKey: NSUUID().uuidString, firstName: LoginClient.Auth.firstName, lastName: LoginClient.Auth.lastName, mapString: mapString, mediaURL: mediaURL, latitude: latitude, longitude: longitude )
@@ -108,6 +109,7 @@ class AddLocationVC: UIViewController {
         //center map to marker
         let coordinateRegion = Utilities.centerMapOnLocation(distance: 250000, latitude: location.latitude, longitude: location.longitude)
         self.mapView.setRegion(coordinateRegion, animated: true)
+        hideActivity()
         setActionState(state: .addLocationAction)
     }
     
@@ -209,14 +211,17 @@ class AddLocationVC: UIViewController {
         self.present(alert, animated: true)
     }
     
-    func showActivity(activityText: String){
+    func showActivity(activityText: String, mapAlpha: Bool){
         self.activityText.text = activityText
         activitySpinner.startAnimating()
         self.activityView.alpha = 1
-        UIView.animate(withDuration: 0.3, animations: {
-            self.view.layoutIfNeeded()
-            self.mapView.alpha = 0.5
-        })
+
+        if mapAlpha{
+            UIView.animate(withDuration: 0.3, animations: {
+                self.view.layoutIfNeeded()
+                self.mapView.alpha = 0.5
+            })
+        }
     }
     
     func hideActivity(){
