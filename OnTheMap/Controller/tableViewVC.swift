@@ -16,13 +16,10 @@ class tableViewVC: UIViewController {
     // MARK: - Overrides
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
     }
     
     override func viewWillAppear(_ animated: Bool) {
         setup()
-        print("show model")
-        print(StudentInformation.studentLocations)
     }
     
     // MARK: - IBActions
@@ -42,7 +39,7 @@ class tableViewVC: UIViewController {
             return
         }
         
-        StudentInformation.studentLocations = locations.results
+        Students.studentsInformation = locations.results
         self.tableView.reloadData()
         self.showIndicator(false)
     }
@@ -97,12 +94,12 @@ extension tableViewVC:  UITableViewDelegate, UITableViewDataSource{
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return StudentInformation.studentLocations.count
+        return Students.studentsInformation.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "LocationCell")!
-        if let location = StudentInformation.studentLocations[(indexPath as IndexPath).row] as StudentLocation? {
+        if let location = Students.studentsInformation[(indexPath as IndexPath).row] as StudentInformation? {
             cell.textLabel?.text = "\(location.firstName) \(location.lastName)"
             cell.detailTextLabel?.text = "\(location.mapString) (\(location.mediaURL))"
             cell.imageView?.image = UIImage(named: "pin")
@@ -111,7 +108,7 @@ extension tableViewVC:  UITableViewDelegate, UITableViewDataSource{
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if let location = StudentInformation.studentLocations[(indexPath as IndexPath).row] as StudentLocation? {
+        if let location = Students.studentsInformation[(indexPath as IndexPath).row] as StudentInformation? {
             Utilities.openUrl(urlString: location.mediaURL, completion: {(success) in
                 if !success{
                     self.showAlert(title: "Website Check", message: CustomError.urlNotValid.errorDescription!)

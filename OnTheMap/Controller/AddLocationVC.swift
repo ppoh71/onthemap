@@ -234,7 +234,6 @@ class AddLocationVC: UIViewController {
     }
 }
 
-
 extension AddLocationVC: MKMapViewDelegate{
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         guard annotation is MKPointAnnotation else { print("no mkpointannotaions"); return nil }
@@ -249,7 +248,6 @@ extension AddLocationVC: MKMapViewDelegate{
             pinView!.rightCalloutAccessoryView = UIButton(type: .infoDark)
         }
         else {
-            print("annotation view")
             pinView!.annotation = annotation
         }
         return pinView
@@ -262,4 +260,3 @@ extension AddLocationVC:  UITextFieldDelegate{
         return false
     }
 }
-

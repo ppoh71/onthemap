@@ -16,5 +16,3 @@ struct Credetials: Codable{
 struct LoginRequest: Codable{
     let udacity: Credetials
 }
-
-

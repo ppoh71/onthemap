@@ -21,10 +21,10 @@ class LoginVC: UIViewController {
     // MARK: - Overrides
     override func viewDidLoad() {
         super.viewDidLoad()
-        setup()
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        setup()
         isLoggingIn(false)
     }
 
@@ -97,5 +97,12 @@ class LoginVC: UIViewController {
         emailTextfield.isEnabled = !activeLogin
         passwordTextfield.isEnabled = !activeLogin
         loginButton.isEnabled = !activeLogin
+    }
+}
+
+extension LoginVC:  UITextFieldDelegate{
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.endEditing(true)
+        return false
     }
 }

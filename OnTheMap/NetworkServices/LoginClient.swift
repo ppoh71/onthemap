@@ -74,7 +74,6 @@ class LoginClient{
 
                 do{
                     let errorResponse = try JSONDecoder().decode(LoginErrorResponse.self, from: newData!)
-                    print(errorResponse)
                     DispatchQueue.main.async {
                         completion(nil, errorResponse)
                     }

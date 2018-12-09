@@ -8,7 +8,7 @@
 
 import Foundation
 
-class StudentLocation: Codable{
+class StudentInformation: Codable{
     let objectId: String
     let uniqueKey: String
     let firstName: String
@@ -35,6 +35,6 @@ class StudentLocation: Codable{
     }
 }
 
-struct StudentInformation{
-   static var studentLocations = [StudentLocation]()
+struct Students: Codable{
+   static var studentsInformation = [StudentInformation]()
 }

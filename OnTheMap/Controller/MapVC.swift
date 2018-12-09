@@ -19,7 +19,7 @@ class MapVC: UIViewController{
     var annotations = [MKPointAnnotation]()
     var seagueFromAddLocationSuccess = false
     var addedLocation: CLLocationCoordinate2D?
-    let studentInformations = StudentInformation()
+    let studentInformations = Students()
     
     // MARK: - Overrides
     override func viewDidLoad() {
@@ -49,8 +49,8 @@ class MapVC: UIViewController{
             return
         }
         
-        StudentInformation.studentLocations = locations.results
-        createAnnotaions(locations: StudentInformation.studentLocations)
+        Students.studentsInformation = locations.results
+        createAnnotaions(locations: Students.studentsInformation)
         checkIfSeagueFromAddedLocation(success: seagueFromAddLocationSuccess)
         hideActivity()
     }
@@ -73,7 +73,7 @@ class MapVC: UIViewController{
         mapView.setRegion(coordinateRegion, animated: true)
     }
     
-    func createAnnotaions(locations: [StudentLocation]){
+    func createAnnotaions(locations: [StudentInformation]){
         for location in locations{
             let annotation = MKPointAnnotation()
             annotation.coordinate = CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)
@@ -149,7 +149,7 @@ extension MapVC: MKMapViewDelegate{
             pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
             pinView!.canShowCallout = true
             pinView!.rightCalloutAccessoryView = UIButton(type: .infoDark)
-            pinView!.pinTintColor = UIColor(red: 0.3, green: 0.6, blue: 0.8, alpha: 1.0)
+            pinView!.pinTintColor = UIColor.black
         }
         else {
             pinView!.annotation = annotation
