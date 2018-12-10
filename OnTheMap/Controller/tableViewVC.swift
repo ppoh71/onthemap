@@ -36,6 +36,7 @@ class tableViewVC: UIViewController {
     func completionHandlerLocations(locations: LocationResponse?, error: Error?){
         guard let locations = locations else{
             showAlert(title: "Location Error", message: error?.localizedDescription ?? "Locations couldn't be loaded")
+            self.showIndicator(false)
             return
         }
         

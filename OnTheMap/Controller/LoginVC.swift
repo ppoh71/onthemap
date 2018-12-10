@@ -30,12 +30,12 @@ class LoginVC: UIViewController {
 
     // MARK: - IBActions
     @IBAction func loginButtonTapped(_ sender: Any) {
-        guard let username =  emailTextfield.text, !username.isEmpty else {
+        guard let username =  emailTextfield.text?.trimmingCharacters(in: CharacterSet.whitespaces), !username.isEmpty else {
             showAlert(title: "Login Faliure", message: "Please Provide Your Login Credentials! (Username is empty?)")
             return
         }
         
-        guard let password =  passwordTextfield.text, !password.isEmpty else {
+        guard let password =  passwordTextfield.text?.trimmingCharacters(in: CharacterSet.whitespaces), !password.isEmpty else {
             showAlert(title: "Login Faliure", message: "Please Provide Your Login Credentials! (Password is empty?)")
             return
         }

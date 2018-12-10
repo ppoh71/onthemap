@@ -8,7 +8,7 @@
 
 import Foundation
 
-class StudentInformation: Codable{
+struct StudentInformation: Codable{
     let objectId: String
     let uniqueKey: String
     let firstName: String
@@ -20,7 +20,7 @@ class StudentInformation: Codable{
     let createdAt: String
     let updatedAt: String
     
-    required init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.objectId = try container.decodeIfPresent(String.self, forKey: .objectId) ?? "Default Value"
         self.uniqueKey = try container.decodeIfPresent(String.self, forKey: .uniqueKey) ?? "Default Value"
@@ -35,6 +35,6 @@ class StudentInformation: Codable{
     }
 }
 
-struct Students: Codable{
+class Students: Codable{
    static var studentsInformation = [StudentInformation]()
 }
