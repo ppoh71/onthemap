@@ -7,7 +7,7 @@ This app shows and adds student locations on a map via a web api.
 It is build for learning and training purposes.
 
 ## Status
-This app passed the Udacity Code Review, therfore all required Features are available.
+This app works as described in the Udacity Course & passed the code review
 
 ## Licence
 Public Domain License. Feel free to do what ever you want
