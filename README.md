@@ -5,6 +5,7 @@ Udacity Course App
 This is a training course app from the Udacity iOs Developer Programm.
 This app shows and adds student locations on a map via a web api.
 It is build for learning and training purposes.
+Leraning Topics: MapKit, Networking Request URLSession()
 
 ## Status
 This app works as described in the Udacity Course & passed the code review
